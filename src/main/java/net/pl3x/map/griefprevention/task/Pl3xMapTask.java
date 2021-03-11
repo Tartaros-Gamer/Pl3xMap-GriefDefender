@@ -1,6 +1,6 @@
 package net.pl3x.map.griefprevention.task;
 
-import me.ryanhamshire.GriefPrevention.Claim;
+import com.griefdefender.api.claim.Claim;
 import net.pl3x.map.api.Key;
 import net.pl3x.map.api.MapWorld;
 import net.pl3x.map.api.Point;
@@ -9,7 +9,7 @@ import net.pl3x.map.api.marker.Marker;
 import net.pl3x.map.api.marker.MarkerOptions;
 import net.pl3x.map.api.marker.Rectangle;
 import net.pl3x.map.griefprevention.configuration.Config;
-import net.pl3x.map.griefprevention.hook.GPHook;
+import net.pl3x.map.griefprevention.hook.GDHook;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -43,7 +43,7 @@ public class Pl3xMapTask extends BukkitRunnable {
 
     void updateClaims() {
         provider.clearMarkers(); // TODO track markers instead of clearing them
-        Collection<Claim> topLevelClaims = GPHook.getClaims();
+        Collection<Claim> topLevelClaims = GDHook.getClaims();
         if (topLevelClaims != null) {
             topLevelClaims.stream()
                     .filter(claim -> claim.getGreaterBoundaryCorner().getWorld().getUID().equals(this.world.uuid()))
@@ -61,11 +61,11 @@ public class Pl3xMapTask extends BukkitRunnable {
 
         Rectangle rect = Marker.rectangle(Point.of(min.getBlockX(), min.getBlockZ()), Point.of(max.getBlockX() + 1, max.getBlockZ() + 1));
 
-        ArrayList<String> builders = new ArrayList<>();
-        ArrayList<String> containers = new ArrayList<>();
-        ArrayList<String> accessors = new ArrayList<>();
-        ArrayList<String> managers = new ArrayList<>();
-        claim.getPermissions(builders, containers, accessors, managers);
+        ArrayList<String> BUILDER = new ArrayList<>();
+        ArrayList<String> CONTAINER = new ArrayList<>();
+        ArrayList<String> ACCESSOR = new ArrayList<>();
+        ArrayList<String> MANAGER = new ArrayList<>();
+        claim.getUserTrusts(BUILDER, CONTAINER, ACCESSOR, MANAGER);
 
         String worldName = min.getWorld().getName();
 
@@ -79,10 +79,10 @@ public class Pl3xMapTask extends BukkitRunnable {
                         .replace("{world}", worldName)
                         .replace("{id}", Long.toString(claim.getID()))
                         .replace("{owner}", claim.getOwnerName())
-                        .replace("{managers}", getNames(managers))
-                        .replace("{builders}", getNames(builders))
-                        .replace("{containers}", getNames(containers))
-                        .replace("{accessors}", getNames(accessors))
+                        .replace("{managers}", getNames(MANAGER))
+                        .replace("{builders}", getNames(BUILDER))
+                        .replace("{containers}", getNames(CONTAINER))
+                        .replace("{accessors}", getNames(ACCESSOR))
                         .replace("{area}", Integer.toString(claim.getArea()))
                         .replace("{width}", Integer.toString(claim.getWidth()))
                         .replace("{height}", Integer.toString(claim.getHeight()))

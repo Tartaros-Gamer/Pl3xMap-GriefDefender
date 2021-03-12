@@ -1,6 +1,7 @@
 package net.pl3x.map.griefprevention.task;
 
 import com.griefdefender.api.claim.Claim;
+import com.griefdefender.api.claim.TrustTypes;
 import net.pl3x.map.api.Key;
 import net.pl3x.map.api.MapWorld;
 import net.pl3x.map.api.Point;
@@ -61,11 +62,10 @@ public class Pl3xMapTask extends BukkitRunnable {
 
         Rectangle rect = Marker.rectangle(Point.of(min.getBlockX(), min.getBlockZ()), Point.of(max.getBlockX() + 1, max.getBlockZ() + 1));
 
-        ArrayList<String> BUILDER = new ArrayList<>();
-        ArrayList<String> CONTAINER = new ArrayList<>();
-        ArrayList<String> ACCESSOR = new ArrayList<>();
-        ArrayList<String> MANAGER = new ArrayList<>();
-        claim.getUserTrusts(BUILDER, CONTAINER, ACCESSOR, MANAGER);
+        List<String> builders = claim.getUserTrusts(TrustTypes.BUILDER).contains(player.getUniqueId());
+        List<String> containers = claim.getUserTrusts(TrustTypes.CONTAINER).contains(getUniqueId());
+        List<String> accessors = claim.getUserTrusts(TrustTypes.ACCESSOR).contains(getUniqueId());
+        List<String> managers = claim.getUserTrusts(TrustTypes.MANAGER).contains(getUniqueId()));
 
         String worldName = min.getWorld().getName();
 
@@ -77,12 +77,12 @@ public class Pl3xMapTask extends BukkitRunnable {
                 .fillOpacity(Config.FILL_OPACITY)
                 .clickTooltip((claim.isAdminClaim() ? Config.ADMIN_CLAIM_TOOLTIP : Config.CLAIM_TOOLTIP)
                         .replace("{world}", worldName)
-                        .replace("{id}", Long.toString(claim.getID()))
+                        .replace("{uuid}", Long.toString(claim.getUniqueId()))
                         .replace("{owner}", claim.getOwnerName())
-                        .replace("{managers}", getNames(MANAGER))
-                        .replace("{builders}", getNames(BUILDER))
-                        .replace("{containers}", getNames(CONTAINER))
-                        .replace("{accessors}", getNames(ACCESSOR))
+                        .replace("{managers}", getNames(managers))
+                        .replace("{builders}", getNames(builders))
+                        .replace("{containers}", getNames(containers))
+                        .replace("{accessors}", getNames(accessors))
                         .replace("{area}", Integer.toString(claim.getArea()))
                         .replace("{width}", Integer.toString(claim.getWidth()))
                         .replace("{height}", Integer.toString(claim.getHeight()))
@@ -94,7 +94,7 @@ public class Pl3xMapTask extends BukkitRunnable {
 
         rect.markerOptions(options);
 
-        String markerid = "griefprevention_" + worldName + "_region_" + Long.toHexString(claim.getID());
+        String markerid = "griefdefender_" + worldName + "_region_" + Long.toHexString(claim.getUniqueId());
         this.provider.addMarker(Key.of(markerid), rect);
     }
 

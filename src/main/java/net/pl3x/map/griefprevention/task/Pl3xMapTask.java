@@ -62,10 +62,10 @@ public class Pl3xMapTask extends BukkitRunnable {
 
         Rectangle rect = Marker.rectangle(Point.of(min.getBlockX(), min.getBlockZ()), Point.of(max.getBlockX() + 1, max.getBlockZ() + 1));
 
-        List<String> builders = claim.getUserTrusts(TrustTypes.BUILDER).contains(player.getUniqueId());
-        List<String> containers = claim.getUserTrusts(TrustTypes.CONTAINER).contains(getUniqueId());
-        List<String> accessors = claim.getUserTrusts(TrustTypes.ACCESSOR).contains(getUniqueId());
-        List<String> managers = claim.getUserTrusts(TrustTypes.MANAGER).contains(getUniqueId()));
+        List<UUID> builders = claim.getUserTrusts(TrustTypes.BUILDER);
+        List<UUID> containers = claim.getUserTrusts(TrustTypes.CONTAINER);
+        List<UUID> accessors = claim.getUserTrusts(TrustTypes.ACCESSOR);
+        List<UUID> managers = claim.getUserTrusts(TrustTypes.MANAGER);
 
         String worldName = min.getWorld().getName();
 
@@ -98,11 +98,11 @@ public class Pl3xMapTask extends BukkitRunnable {
         this.provider.addMarker(Key.of(markerid), rect);
     }
 
-    private static String getNames(List<String> list) {
+    private static String getNames(List<UUID> list) {
         List<String> names = new ArrayList<>();
-        for (String str : list) {
+        for (UUID str : list) {
             try {
-                UUID uuid = UUID.fromString(str);
+                UUID uuid = str;
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
                 names.add(offlinePlayer.getName());
             } catch (Exception e) {

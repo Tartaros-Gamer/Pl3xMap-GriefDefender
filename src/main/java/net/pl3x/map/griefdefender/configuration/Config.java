@@ -1,4 +1,4 @@
-package net.pl3x.map.griefprevention.configuration;
+package net.pl3x.map.griefdefender.configuration;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

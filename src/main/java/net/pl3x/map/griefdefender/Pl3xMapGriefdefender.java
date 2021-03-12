@@ -1,7 +1,7 @@
-package net.pl3x.map.griefprevention;
+package net.pl3x.map.griefdefender;
 
-import net.pl3x.map.griefprevention.configuration.Config;
-import net.pl3x.map.griefprevention.hook.Pl3xMapHook;
+import net.pl3x.map.griefdefender.configuration.Config;
+import net.pl3x.map.griefdefender.hook.Pl3xMapHook;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Pl3xMapGriefdefender extends JavaPlugin {

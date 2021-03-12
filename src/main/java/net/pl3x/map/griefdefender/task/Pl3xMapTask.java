@@ -1,5 +1,6 @@
-package net.pl3x.map.griefprevention.task;
+package net.pl3x.map.griefdefender.task;
 
+import com.flowpowered.math.vector.Vector3i;
 import com.griefdefender.api.claim.Claim;
 import com.griefdefender.api.claim.TrustTypes;
 import net.pl3x.map.api.Key;
@@ -9,11 +10,11 @@ import net.pl3x.map.api.SimpleLayerProvider;
 import net.pl3x.map.api.marker.Marker;
 import net.pl3x.map.api.marker.MarkerOptions;
 import net.pl3x.map.api.marker.Rectangle;
-import net.pl3x.map.griefprevention.configuration.Config;
-import net.pl3x.map.griefprevention.hook.GDHook;
+import net.pl3x.map.griefdefender.configuration.Config;
+import net.pl3x.map.griefdefender.hook.GDHook;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.awt.Color;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Pl3xMapTask extends BukkitRunnable {
     private final MapWorld world;
@@ -47,27 +47,28 @@ public class Pl3xMapTask extends BukkitRunnable {
         Collection<Claim> topLevelClaims = GDHook.getClaims();
         if (topLevelClaims != null) {
             topLevelClaims.stream()
-                    .filter(claim -> claim.getGreaterBoundaryCorner().getWorld().getUID().equals(this.world.uuid()))
-                    .filter(claim -> claim.parent == null)
+                    .filter(claim -> claim.getWorldUniqueId().equals(this.world.uuid()))
+                    .filter(claim -> claim.getParent() == null)
                     .forEach(this::handleClaim);
         }
     }
 
     private void handleClaim(Claim claim) {
-        Location min = claim.getLesserBoundaryCorner();
-        Location max = claim.getGreaterBoundaryCorner();
+        Vector3i min = claim.getLesserBoundaryCorner();
+        Vector3i max = claim.getGreaterBoundaryCorner();
         if (min == null) {
             return;
         }
 
-        Rectangle rect = Marker.rectangle(Point.of(min.getBlockX(), min.getBlockZ()), Point.of(max.getBlockX() + 1, max.getBlockZ() + 1));
+        Rectangle rect = Marker.rectangle(Point.of(min.getX(), min.getZ()), Point.of(max.getX() + 1, max.getZ() + 1));
 
         List<UUID> builders = claim.getUserTrusts(TrustTypes.BUILDER);
         List<UUID> containers = claim.getUserTrusts(TrustTypes.CONTAINER);
         List<UUID> accessors = claim.getUserTrusts(TrustTypes.ACCESSOR);
         List<UUID> managers = claim.getUserTrusts(TrustTypes.MANAGER);
 
-        String worldName = min.getWorld().getName();
+        World claimWorld = Bukkit.getWorld(claim.getWorldUniqueId());
+        String worldName = claimWorld.getName();
 
         MarkerOptions.Builder options = MarkerOptions.builder()
                 .strokeColor(Config.STROKE_COLOR)
@@ -77,7 +78,7 @@ public class Pl3xMapTask extends BukkitRunnable {
                 .fillOpacity(Config.FILL_OPACITY)
                 .clickTooltip((claim.isAdminClaim() ? Config.ADMIN_CLAIM_TOOLTIP : Config.CLAIM_TOOLTIP)
                         .replace("{world}", worldName)
-                        .replace("{uuid}", Long.toString(claim.getUniqueId()))
+                        .replace("{uuid}", claim.getUniqueId().toString())
                         .replace("{owner}", claim.getOwnerName())
                         .replace("{managers}", getNames(managers))
                         .replace("{builders}", getNames(builders))
@@ -94,7 +95,7 @@ public class Pl3xMapTask extends BukkitRunnable {
 
         rect.markerOptions(options);
 
-        String markerid = "griefdefender_" + worldName + "_region_" + Long.toHexString(claim.getUniqueId());
+        String markerid = "griefdefender_" + worldName + "_region_" + claim.getUniqueId();
         this.provider.addMarker(Key.of(markerid), rect);
     }
 
@@ -102,11 +103,10 @@ public class Pl3xMapTask extends BukkitRunnable {
         List<String> names = new ArrayList<>();
         for (UUID str : list) {
             try {
-                UUID uuid = str;
-                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(str);
                 names.add(offlinePlayer.getName());
             } catch (Exception e) {
-                names.add(str);
+                names.add(str.toString());
             }
         }
         return String.join(", ", names);

@@ -48,7 +48,6 @@ public class Pl3xMapTask extends BukkitRunnable {
         if (topLevelClaims != null) {
             topLevelClaims.stream()
                     .filter(claim -> claim.getWorldUniqueId().equals(this.world.uuid()))
-                    .filter(claim -> claim.getParent() == null)
                     .forEach(this::handleClaim);
         }
     }
@@ -95,7 +94,7 @@ public class Pl3xMapTask extends BukkitRunnable {
 
         rect.markerOptions(options);
 
-        String markerid = "griefdefender_" + worldName + "_region_" + claim.getUniqueId();
+        String markerid = "griefdefender_" + worldName + "_region_" + claim.getUniqueId().toString();
         this.provider.addMarker(Key.of(markerid), rect);
     }
 

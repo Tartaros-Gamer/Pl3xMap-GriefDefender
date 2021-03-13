@@ -25,5 +25,5 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.2
       with:
-        name: artifact
-        path: warn
+        name: PI3xMap-GriefDefender
+        path: /home/runner/work/Pl3xMap-GriefDefender/Pl3xMap-GriefDefender/target/pl3xmap-griefdefender-1.0-SNAPSHOT.jar

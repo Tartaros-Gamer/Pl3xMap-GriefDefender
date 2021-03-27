@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Config {
-    public static String CONTROL_LABEL = "GriefPrevention";
+    public static String CONTROL_LABEL = "GriefDefender";
     public static boolean CONTROL_SHOW = true;
     public static boolean CONTROL_HIDE = false;
     public static int UPDATE_INTERVAL = 300;
@@ -20,13 +20,13 @@ public class Config {
     public static double FILL_OPACITY = 0.2D;
     public static String STRINGS_PUBLIC = "Public";
     public static String CLAIM_TOOLTIP = "Claim Owner: <span style=\"font-weight:bold;\">{owner}</span><br/>" +
-            "Permission Trust: <span style=\"font-weight:bold;\">{managers}</span><br/>" +
-            "Trust: <span style=\"font-weight:bold;\">{builders}</span><br/>" +
+            "Manager Trust: <span style=\"font-weight:bold;\">{managers}</span><br/>" +
+            "Builder Trust: <span style=\"font-weight:bold;\">{builders}</span><br/>" +
             "Container Trust: <span style=\"font-weight:bold;\">{containers}</span><br/>" +
             "Access Trust: <span style=\"font-weight:bold;\">{accessors}</span>";
     public static String ADMIN_CLAIM_TOOLTIP = "<span style=\"font-weight:bold;\">Administrator Claim</span><br/>" +
-            "Permission Trust: <span style=\"font-weight:bold;\">{managers}</span><br/>" +
-            "Trust: <span style=\"font-weight:bold;\">{builders}</span><br/>" +
+            "Manager Trust: <span style=\"font-weight:bold;\">{managers}</span><br/>" +
+            "Builder Trust: <span style=\"font-weight:bold;\">{builders}</span><br/>" +
             "Container Trust: <span style=\"font-weight:bold;\">{containers}</span><br/>" +
             "Access Trust: <span style=\"font-weight:bold;\">{accessors}</span>";
 
